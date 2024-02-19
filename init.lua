@@ -10,6 +10,7 @@ local mq = require('mq')
 
 local function ScanXtar()
 	if mq.TLO.Me.XTarget() > 0 and mq.TLO.Me.CombatState() ~= 'COMBAT' then
+		mq.delay(1000)
 		for i = 1, 20 do
 			if mq.TLO.Me.XTarget() > 0 and mq.TLO.Me.CombatState() ~= 'COMBAT' then
 				local xName = mq.TLO.Me.XTarget(i).Name() or 'NULL'
@@ -17,7 +18,7 @@ local function ScanXtar()
 				local xType = mq.TLO.Me.XTarget(i).Type() or '?'
 				if ((xName ~= 'NULL' and xHp == -1 ) or xType == 'Corpse') then
 					mq.cmd('/squelch /xtarg set '..i..' AH')
-					print(':: xFix :: Cleaning Xtarget Slot:: '..i..' Name:: '..xName..' Type:: '..xType)
+					--print(':: xFix :: Cleaning Xtarget Slot:: '..i..' Name:: '..xName..' Type:: '..xType)
 				end
 			else
 				break
