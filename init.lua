@@ -17,8 +17,8 @@ local function ScanXtar()
 			local xId = mq.TLO.Me.XTarget(i).ID() or -1
 			local xType = mq.TLO.Me.XTarget(i).Type() or '?'
 
-			if mq.TLO.Me.XTarget() > 0 and xId == 0 then
-				if ((xName ~= 'NULL' and xId == 0 ) or xType == 'Corpse') then
+			if (mq.TLO.Me.XTarget() > 0 and xId == 0) or xType == 'Corpse' then
+				if ((xName ~= 'NULL' and xId == 0) or xType == 'Corpse') then
 					mq.cmd('/squelch /xtarg set '..i..' ET')
 					mq.delay(100)
 					mq.cmd('/squelch /xtarg set '..i..' AH')
