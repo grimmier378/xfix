@@ -10,7 +10,7 @@ local mq = require('mq')
 local PAUSED = false
 local DEBUG = false
 local RUNNING = true
-local version = 1.5
+local version = 1.7
 local function debug(string)
     if(DEBUG) then print(string.format('\aoxFix::\aoDEBUG::\at %s',tostring(string))) end
 end
@@ -18,8 +18,8 @@ local function help()
 	print('\ayxFix::\a-o xFix Command List:')
 	print('\ayxFix::\ag /xfix pause \at Toggles Pause on and off')
 	print('\ayxfix::\ag /xfis debug \at Turn on and off Debug Spam')
-	print('\ayxFix::\ag /xfix stop \at Ends the script')
-	print('\ayxFix::\ag /xfix help \at Lists this command list')
+	print('\ayxFix::\ag /xfix stop \at  Ends the script')
+	print('\ayxFix::\ag /xfix help \at  Lists this command list')
 end
 local function bind(...)
     local args = {...}
@@ -50,17 +50,16 @@ end
 local function ScanXtar()
 	if mq.TLO.Me.XTarget() > 0 then
 		for i = 1, mq.TLO.Me.XTargetSlots() do
-			local xName = mq.TLO.Me.XTarget(i).Name() or 'NULL'
-			local xHp = mq.TLO.Me.XTarget(i).PctHPs() or -1
-			local xId = mq.TLO.Me.XTarget(i).ID() or -1
-			local xType = mq.TLO.Me.XTarget(i).Type() or '?'
+			local xTarg = mq.TLO.Me.XTarget(i)
+			if xTarg.ID() > 0 then return end
 			local xCount = mq.TLO.Me.XTarget() or 0
-			if (xCount > 0 and xId == 0) or xType == 'Corpse' then
-				if ((xName ~= 'NULL' and xId == 0) or xType == 'Corpse') then
-					mq.cmd('/squelch /xtarg set '..i..' ET')
+			local xName, xType = xTarg.Name(), xTarg.Type()
+			if (xCount > 0 and xTarg.ID() == 0) or xTarg.Type() == 'Corpse' then
+				if ((xTarg.Name() ~= 'NULL' and xTarg.ID() == 0) or xTarg.Type() == 'Corpse') then
+					mq.cmdf("/squelch /xtarg set %s ET", i)
 					mq.delay(100)
-					mq.cmd('/squelch /xtarg set '..i..' AH')
-				local debugString = '\ayxFix::\at Cleaning Xtarget Slot:: '..i..'\ao XTarget Count:: '..tostring(xCount)..'\ag Name:: '..xName..'\ax Type:: '..xType
+					mq.cmdf("/squelch /xtarg set %s AH", i)
+					local debugString = string.format('\ayxFix::\at Cleaning Xtarget Slot:: %s\ao XTarget Count:: %s\ag Name:: %s\ax Type:: %s', i, xCount, xName, xType)
 				if DEBUG then debug(debugString) end
 				end
 			else
@@ -70,7 +69,7 @@ local function ScanXtar()
 	end
 end
 local function init()
-	print('\ayxFix::\ag LOADING \ayxFix::Version::\ag'..tostring(version))
+	printf("\ayxFix::\ag LOADING \ayxFix::Version::\ag%s", version)
 	mq.bind('/xfix', bind)
 	help()
 end
