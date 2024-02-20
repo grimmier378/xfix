@@ -10,7 +10,7 @@ local mq = require('mq')
 local PAUSED = false
 local DEBUG = false
 local RUNNING = true
-local version = 1.5
+local version = 1.6
 local function debug(string)
     if(DEBUG) then print(string.format('\aoxFix::\aoDEBUG::\at %s',tostring(string))) end
 end
