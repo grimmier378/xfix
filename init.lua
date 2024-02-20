@@ -6,7 +6,6 @@
 	-- Purpose: fix stuck xtarget slots that will break automation. Sometimes these are empty slots other times they are corpses.
 	-- Scans xtarg list every second. if we are not in combat and there is a stuck slot we pop it and set it back to autohater.
 
----@type Mq
 local mq = require('mq')
 local PAUSED = false
 local DEBUG = false
@@ -50,18 +49,18 @@ local function bind(...)
 end
 local function ScanXtar()
 	if mq.TLO.Me.XTarget() > 0 then
-		for i = 1, 20 do
+		for i = 1, mq.TLO.Me.XTargetSlots() do
 			local xName = mq.TLO.Me.XTarget(i).Name() or 'NULL'
 			local xHp = mq.TLO.Me.XTarget(i).PctHPs() or -1
 			local xId = mq.TLO.Me.XTarget(i).ID() or -1
 			local xType = mq.TLO.Me.XTarget(i).Type() or '?'
-
-			if (mq.TLO.Me.XTarget() > 0 and xId == 0) or xType == 'Corpse' then
+			local xCount = mq.TLO.Me.XTarget() or 0
+			if (xCount > 0 and xId == 0) or xType == 'Corpse' then
 				if ((xName ~= 'NULL' and xId == 0) or xType == 'Corpse') then
 					mq.cmd('/squelch /xtarg set '..i..' ET')
 					mq.delay(100)
 					mq.cmd('/squelch /xtarg set '..i..' AH')
-				local debugString = ' Cleaning Xtarget Slot:: '..i..' Name:: '..xName..' Type:: '..xType
+				local debugString = '\ayxFix::\at Cleaning Xtarget Slot:: '..i..'\ao XTarget Count:: '..tostring(xCount)..'\ag Name:: '..xName..'\ax Type:: '..xType
 				if DEBUG then debug(debugString) end
 				end
 			else
