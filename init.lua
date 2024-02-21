@@ -10,7 +10,9 @@ local mq = require('mq')
 local PAUSED = false
 local DEBUG = false
 local RUNNING = true
-local version = 1.7
+local version = 1.7.1
+local arg = {...}
+if arg[1] and arg[1] == 'debug' then DEBUG = true end
 local function debug(string)
     if(DEBUG) then print(string.format('\aoxFix::\aoDEBUG::\at %s',tostring(string))) end
 end
@@ -20,6 +22,7 @@ local function help()
 	print('\ayxfix::\ag /xfis debug \at Turn on and off Debug Spam')
 	print('\ayxFix::\ag /xfix stop \at  Ends the script')
 	print('\ayxFix::\ag /xfix help \at  Lists this command list')
+	if DEBUG then print('\ayxFix::\ag Debug Spam Enabled!') end
 end
 local function bind(...)
     local args = {...}
@@ -51,18 +54,18 @@ local function ScanXtar()
 	if mq.TLO.Me.XTarget() > 0 then
 		for i = 1, mq.TLO.Me.XTargetSlots() do
 			local xTarg = mq.TLO.Me.XTarget(i)
-			if xTarg.ID() > 0 then return end
+			if xTarg.ID() > 0 and xTarg.Type() ~= 'Corpse' then return end
 			local xCount = mq.TLO.Me.XTarget() or 0
 			local xName, xType = xTarg.Name(), xTarg.Type()
-			if (xCount > 0 and xTarg.ID() == 0) or xTarg.Type() == 'Corpse' then
-				if ((xTarg.Name() ~= 'NULL' and xTarg.ID() == 0) or xTarg.Type() == 'Corpse') then
+			if (xCount > 0 and xTarg.ID() == 0) or (xType == 'Corpse') then
+				if ((xTarg.Name() ~= 'NULL' and xTarg.ID() == 0) or (xType == 'Corpse')) then
 					mq.cmdf("/squelch /xtarg set %s ET", i)
 					mq.delay(100)
 					mq.cmdf("/squelch /xtarg set %s AH", i)
-					local debugString = string.format('\ayxFix::\at Cleaning Xtarget Slot:: %s\ao XTarget Count:: %s\ag Name:: %s\ax Type:: %s', i, xCount, xName, xType)
-				if DEBUG then debug(debugString) end
+					local debugString = string.format('\ayxFix\aw:: Cleaning Xtarget Slot::\at %s\aw XTarget Count::\ao %s\aw Name::\ag %s\aw Type:: \t%s', i, xCount, xName, xType)
+					if DEBUG then debug(debugString) end
 				end
-			else
+				else
 				break
 			end
 		end
@@ -75,10 +78,10 @@ local function init()
 end
 local function loop()
 	while RUNNING do
+		mq.delay('1s')
 		if not PAUSED then
 			if mq.TLO.Me.CombatState() ~= 'COMBAT' then ScanXtar() end
 		end
-		mq.delay('1s')
 	end
 end
 init()
