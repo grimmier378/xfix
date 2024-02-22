@@ -10,7 +10,7 @@ local mq = require('mq')
 local PAUSED = false
 local DEBUG = false
 local RUNNING = true
-local version = 1.7.1
+local version = "1.7.1"
 local arg = {...}
 if arg[1] and arg[1] == 'debug' then DEBUG = true end
 local function debug(string)
