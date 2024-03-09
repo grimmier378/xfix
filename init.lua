@@ -55,18 +55,15 @@ local function ScanXtar()
 		for i = 1, mq.TLO.Me.XTargetSlots() do
 			local xTarg = mq.TLO.Me.XTarget(i)
 			if not (xTarg.ID() > 0 and xTarg.Type() ~= 'Corpse') then
-				local xCount = mq.TLO.Me.XTarget() or 0
-				local xName, xType = xTarg.Name(), xTarg.Type()
-				if (xCount > 0 and xTarg.ID() == 0) or (xType == 'Corpse') then
-					if ((xTarg.Name() ~= 'NULL' and xTarg.ID() == 0) or (xType == 'Corpse')) then
-						mq.cmdf("/squelch /xtarg set %s ET", i)
-						mq.delay(100)
-						mq.cmdf("/squelch /xtarg set %s AH", i)
-						local debugString = string.format('\ayxFix\aw:: Cleaning Xtarget Slot::\at %s\aw XTarget Count::\ao %s\aw Name::\ag %s\aw Type:: \t%s', i, xCount, xName, xType)
-						if DEBUG then debug(debugString) end
-					end
-					else
-					break
+			local xCount = mq.TLO.Me.XTarget() or 0
+			local xName, xType = xTarg.Name(), xTarg.Type()
+			if (xCount > 0 and xTarg.ID() == 0) or (xType == 'Corpse') then
+				if ((xTarg.Name() ~= 'NULL' and xTarg.ID() == 0) or (xType == 'Corpse')) then
+					mq.cmdf("/squelch /xtarg set %s ET", i)
+					mq.delay(100)
+					mq.cmdf("/squelch /xtarg set %s AH", i)
+					local debugString = string.format('\ayxFix\aw:: Cleaning Xtarget Slot::\at %s\aw XTarget Count::\ao %s\aw Name::\ag %s\aw Type:: \t%s', i, xCount, xName, xType)
+					if DEBUG then debug(debugString) end
 				end
 			end
 		end
