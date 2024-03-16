@@ -67,6 +67,7 @@ local function ScanXtar()
 				end
 			end
 		end
+		end
 	end
 end
 local function init()
